@@ -29,7 +29,7 @@
  * private.  This is the case because only the
  * List class can make validation decisions
  *************************************************/
-template <class T>
+template<class T>
 class Node
 {
 public:
@@ -40,19 +40,19 @@ public:
    // Construct
    //
 
-   Node(): pNext(nullptr), pPrev(nullptr) { }
-   
-   Node(const T& data) : pNext(nullptr), pPrev(nullptr), data(data) {}
+   Node() : pNext(nullptr), pPrev(nullptr) {}
 
-   Node(T&& data) :data(data)  {  pNext = pPrev = nullptr;  }
+   Node(const T &data) : pNext(nullptr), pPrev(nullptr), data(data) {}
+
+   Node(T &&data) : data(data) { pNext = pPrev = nullptr; }
 
    //
    // Member variables
    //
 
    T data;                 // user data
-   Node <T> * pNext;       // pointer to next node
-   Node <T> * pPrev;       // pointer to previous node
+   Node<T> *pNext;       // pointer to next node
+   Node<T> *pPrev;       // pointer to previous node
 };
 
 /***********************************************
@@ -63,16 +63,25 @@ public:
  *   OUTPUT : return the new list
  *   COST   : O(n)
  **********************************************/
-template <class T>
-inline Node <T> * copy(const Node <T> * pSource) 
+
+
+
+/**
+ * This copies stuff
+ * @tparam T
+ * @param pSource
+ * @return a pointer to a Node
+ */
+template<class T>
+inline Node<T> *copy(const Node<T> *pSource)
 {
-   Node <T>* pDestination = nullptr;
-   
-   if(pSource != nullptr)
+   Node<T> *pDestination = nullptr;
+
+   if (pSource != nullptr)
    {
       pDestination = new Node<T>(pSource->data);
-      Node <T>* destCurrent = pDestination;
-      for (auto p = pSource->pNext;p;p=p->pNext)
+      Node<T> *destCurrent = pDestination;
+      for (auto p = pSource->pNext; p; p = p->pNext)
          destCurrent = insert(destCurrent, p->data, true);
    }
    return pDestination;
@@ -86,8 +95,8 @@ inline Node <T> * copy(const Node <T> * pSource)
  *   OUTPUT : return the new list
  *   COST   : O(n)
  **********************************************/
-template <class T>
-inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
+template<class T>
+inline void assign(Node<T> *&pDestination, const Node<T> *pSource)
 {
    auto pDes = pDestination;
    auto pSrc = pSource;
@@ -99,11 +108,11 @@ inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
       pDes = pDes->pNext;
       pSrc = pSrc->pNext;
    }
-   
+
    if (pSrc != nullptr)
    {  // Source list is longer than destination list
       pDes = pDesPrevious;
-      
+
       while (pSrc != nullptr)
       {
          pDes = insert(pDes, pSrc->data, true);
@@ -111,23 +120,21 @@ inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
             pDestination = pDes;
          pSrc = pSrc->pNext;
       }
-      
-   }
-   else if (pSrc == nullptr && pDes != nullptr)
+
+   } else if (pDes != nullptr)
    {  // Destination list is longer than source list
       bool setToNull = false;
-      
+
       if (pDes->pPrev != nullptr)
       {
          pDes->pPrev->pNext = nullptr;
-      }
-      else
+      } else
       {
          setToNull = true;
       }
-      
+
       clear(pDes);
-   
+
       if (setToNull)
          pDestination = nullptr;
    }
@@ -138,8 +145,8 @@ inline void assign(Node <T> * & pDestination, const Node <T> * pSource)
  * Swap the list from LHS to RHS
  *   COST   : O(1)
  **********************************************/
-template <class T>
-inline void swap(Node <T>* &pLHS, Node <T>* &pRHS) { std::swap(pLHS, pRHS); }
+template<class T>
+inline void swap(Node<T> *&pLHS, Node<T> *&pRHS) { std::swap(pLHS, pRHS); }
 
 /***********************************************
  * REMOVE
@@ -148,28 +155,27 @@ inline void swap(Node <T>* &pLHS, Node <T>* &pRHS) { std::swap(pLHS, pRHS); }
  *   OUTPUT : the pointer to the parent node
  *   COST   : O(1)
  **********************************************/
-template <class T>
-inline Node <T> * remove(const Node <T> * pRemove) 
+template<class T>
+inline Node<T> *remove(const Node<T> *pRemove)
 {
-   
+
    if (pRemove == nullptr)
       return nullptr;
    if (pRemove->pPrev)
       pRemove->pPrev->pNext = pRemove->pNext;
    if (pRemove->pNext)
       pRemove->pNext->pPrev = pRemove->pPrev;
-   
-   Node<T> * pReturn;
+
+   Node<T> *pReturn;
    if (pRemove->pPrev)
       pReturn = pRemove->pPrev;
    else
       pReturn = pRemove->pNext;
-   
+
    delete pRemove;
    pRemove = nullptr;
    return pReturn;
 }
-
 
 /**********************************************
  * INSERT 
@@ -182,52 +188,47 @@ inline Node <T> * remove(const Node <T> * pRemove)
  *   OUTPUT  : return the newly inserted item
  *   COST    : O(1)
  **********************************************/
-template <class T>
-inline Node <T> * insert(Node <T> * pCurrent,
-                  const T & t,
-                  bool after = false)
+template<class T>
+inline Node<T> *insert(Node<T> *pCurrent, const T &t, bool after = false)
 {
-   Node <T>*newElement = new Node<T>(t);
+   auto *newElement = new Node<T>(t);
    if (pCurrent != nullptr)
    {
-      
-   
-   if(after == true)
-   {
-      if (pCurrent->pNext == nullptr)
+
+
+      if (after)
       {
-         // Simple Add After
-         newElement->pPrev = pCurrent;
-         pCurrent->pNext = newElement;
-      }
-      else
+         if (pCurrent->pNext == nullptr)
+         {
+            // Simple Add After
+            newElement->pPrev = pCurrent;
+            pCurrent->pNext = newElement;
+         } else
+         {
+            // Fancy Insert After
+            newElement->pNext = pCurrent->pNext;
+            newElement->pPrev = pCurrent;
+            pCurrent->pNext = newElement;
+            newElement->pNext->pPrev = newElement;
+         }
+
+      } else
       {
-         // Fancy Insert After
-         newElement->pNext = pCurrent->pNext;
-         newElement->pPrev = pCurrent;
-         pCurrent->pNext = newElement;
-         newElement->pNext->pPrev = newElement;
+         if (pCurrent->pPrev == nullptr)
+         {
+            // Simple Add Before
+            newElement->pNext = pCurrent;
+            pCurrent->pPrev = newElement;
+         } else
+         {
+            // Fancy insert before
+            newElement->pNext = pCurrent;
+            newElement->pPrev = pCurrent->pPrev;
+            pCurrent->pPrev = newElement;
+            newElement->pPrev->pNext = newElement;
+         }
+
       }
-      
-   }
-   else
-   {
-      if (pCurrent->pPrev == nullptr)
-      {
-         // Simple Add Before
-         newElement->pNext = pCurrent;
-         pCurrent->pPrev = newElement;
-      }
-      else
-      {
-         // Fancy insert before
-         newElement->pNext = pCurrent;
-         newElement->pPrev = pCurrent->pPrev;
-         pCurrent->pPrev = newElement;
-         newElement->pPrev->pNext = newElement;
-      }
-      
-   }
    }
    return newElement;
 }
@@ -240,11 +241,11 @@ inline Node <T> * insert(Node <T> * pCurrent,
  *  OUTPUT  : number of nodes
  *  COST    : O(n)
  ********************************************************/
-template <class T>
-inline size_t size(const Node <T> * pHead)
+template<class T>
+inline size_t size(const Node<T> *pHead)
 {
    unsigned int size = 0;
-   while(pHead != nullptr)
+   while (pHead != nullptr)
    {
       size++;
       pHead = pHead->pNext;
@@ -260,11 +261,8 @@ inline size_t size(const Node <T> * pHead)
  *    OUTPUT : the data from the linked list on the screen
  *    COST   : O(n)
  **********************************************/
-template <class T>
-inline std::ostream & operator << (std::ostream & out, const Node <T> * pHead)
-{
-   return out;
-}
+template<class T>
+inline std::ostream &operator<<(std::ostream &out, const Node<T> *pHead) { return out; }
 
 /*****************************************************
  * FREE DATA
@@ -273,8 +271,8 @@ inline std::ostream & operator << (std::ostream & out, const Node <T> * pHead)
  *   OUTPUT  : pHead set to NULL
  *   COST    : O(n)
  ****************************************************/
-template <class T>
-inline void clear(Node <T> * & pHead)
+template<class T>
+inline void clear(Node<T> *&pHead)
 {
    while (pHead != nullptr)
    {

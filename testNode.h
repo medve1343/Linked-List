@@ -144,7 +144,7 @@ public:
       assertUnit(pSrc == nullptr);
    }  // teardown
 
-   // copy a single node in insolation
+   // copy a single node in isolation
    void test_copy_one()
    {  // setup
       //    +----+
@@ -297,7 +297,7 @@ public:
       teardownStandardFixture(pDes);
    }
 
-   // assign an empty linked list onto a standard fixturew
+   // assign an empty linked list onto a standard fixture
    void test_assign_emptyToStandard()
    {  // setup
       const Node <Spy>* pSrc = nullptr;
