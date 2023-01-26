@@ -50,7 +50,7 @@ public:
    // Member variables
    //
 
-   T data;                 // user data
+   T data;               // user data
    Node<T> *pNext;       // pointer to next node
    Node<T> *pPrev;       // pointer to previous node
 };
@@ -63,15 +63,6 @@ public:
  *   OUTPUT : return the new list
  *   COST   : O(n)
  **********************************************/
-
-
-
-/**
- * This copies stuff
- * @tparam T
- * @param pSource
- * @return a pointer to a Node
- */
 template<class T>
 inline Node<T> *copy(const Node<T> *pSource)
 {
